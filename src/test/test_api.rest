@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/new-user/
+Content-Type: application/json
+
+{
+    "name": "AAAAA",
+    "lastname": "LAAA",
+    "email": "ALA@gmail.com",
+    "age": "25",
+    "saldo": "5"
+}
