@@ -9,7 +9,7 @@ const session = require('express-session');
 require('./passsport/local-auth');
 
 //Settings
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4000);
 app.set('json spaces', 2);
 
 //Middlewares
