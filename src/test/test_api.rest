@@ -6,17 +6,17 @@ Content-Type: application/json
     "lastname": "R",
     "email": "petr@gmail.com",
     "age": "20",
-    "saldo": "5",
+    "cedula": "1234567890",
     "password": "12345"
 }
 
 ###
-POST http://localhost:4000/api/login
+POST http://localhost:4000/loginN
 Content-Type: application/json
 
 {
     "email": "petr@gmail.com",
-    "password": "12345"
+    "password": "1235"
 }
 
 ###

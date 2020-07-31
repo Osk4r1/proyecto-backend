@@ -27,17 +27,15 @@ passport.use('local-signup', new LocalStrategy({
     passReqToCallback: true
   }, async (req, email, password, done) => {
     
-    
     const ref = db.ref('users').orderByChild('email').equalTo(req.body.email);
     const snapshot = await ref.once('value');
     const user = snapshot.val();
 
     console.log('Imprimiendo usuario de la consulta')
     console.table(user);
-
     if(user) {
-      console.log('entrado al if');
-      return done(null, false, req.flash('signupMessage', 'The Email is already Taken.'));
+      console.log('entrado al if'); 
+      return done(null, false, req.flash('signupMessage', 'El usuario ya existe'));
     }else{
   
       console.log('Entrando al if de registro');
@@ -49,8 +47,9 @@ passport.use('local-signup', new LocalStrategy({
           name: req.body.name,
           lastname: req.body.lastname,
           email: req.body.email,
+          cedula: req.body.cedula,
           age: req.body.age,
-          saldo: req.body.saldo,
+          saldo: "0",
           password: hash
       }
       console.log('nuevo usuario')
@@ -58,6 +57,7 @@ passport.use('local-signup', new LocalStrategy({
       db.ref('users').push(newUser);
       done(null, newUser);
     }
+    
   }));
   
   passport.use('local-signin', new LocalStrategy({
