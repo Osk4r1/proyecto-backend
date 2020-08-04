@@ -22,12 +22,10 @@ router.get('/', (req, res) => {
     res.send('Hello world');
 })
 
-
-
 router.post('/api/new-user', function(req, res, next) {
     passport.authenticate('local-signup', function(err, user, info) {
       if (err) { return next(err); }
-      if (!user) { return res.json({error: 'Error Registro'}); }
+      if (!user) { return res.json({email: 'fail'}); }
 
       req.logIn(user, function(err) {
         if (err) { return next(err); }
@@ -36,41 +34,89 @@ router.post('/api/new-user', function(req, res, next) {
     })(req, res, next);
 });
 
-
-
-router.get('/api/info-user', (req, res) => {
-    const id = req.body.id;
-
-    db.ref('users').once('value', (snapshot) => {
-        const data = snapshot.val();
-        res.send(data);
-    })
-})
-
-/*
-router.post('/api/new-user',  passport.authenticate('local-signup'), (req, res)=>{
-    res.json({ currentUser: req.user });
-});
-
-router.post('/api/login', passport.authenticate('local-signin',{
-    failureRedirect: '/UserF'}), (req, res) =>{
-        res.json(req.user)
-    }
-);
-*/
 
 router.post('/api/login', function(req, res, next) {
-    passport.authenticate('local-signin', function(err, user, info) {
-      if (err) { return next(err); }
-      if (!user) { return res.json({error: 'Error login'}); }
+  passport.authenticate('local-signin', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) { return res.json({email: 'fail'}); }
 
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        return res.json(req.user);
-      });
-    })(req, res, next);
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.json(req.user);
+    });
+  })(req, res, next);
 });
 
+
+
+router.post('/api/info-user', async (req, res) => {
+
+    const ref = db.ref('users').orderByChild('email').equalTo(req.body.email);
+    const snapshot = await ref.once('child_added');
+    const data = snapshot.val();
+
+    res.json(data);
+})
+
+router.post('/api/update', async (req, res) => {
+  const updateUser = req.body;
+
+  console.log(updateUser)
+
+  var updates = {}
+
+  const ref = db.ref('users').orderByChild('email').equalTo(req.body.email);
+  const snapshot = await ref.once('child_added');
+  const key = snapshot.key;
+
+  updates['/users/'+key+'/name'] = updateUser.name;
+  updates['/users/'+key+'/lastname'] = updateUser.lastname;
+  updates['/users/'+key+'/cedula'] = updateUser.cedula;
+  updates['/users/'+key+'/age'] = updateUser.age;
+  const userActualizado = await db.ref().update(updates);
+
+  const ref2 = db.ref('users').orderByChild('email').equalTo(req.body.email);
+  const snapshot2 = await ref2.once('child_added');
+  const user = snapshot2.val();
+
+
+  console.log(user)
+  res.json(user)
+
+})
+
+router.post('/api/pago', async (req, res) =>{
+  const updateUser = req.body;
+
+  console.log(updateUser)
+
+  var updates = {}
+
+  const ref = db.ref('users').orderByChild('email').equalTo(req.body.email);
+  const snapshot = await ref.once('child_added');
+  const key = snapshot.key;
+  const data = snapshot.val();
+
+  var nuevoSaldo = parseFloat(data.saldo) + parseFloat(updateUser.saldo);
+
+
+  updates['/users/'+key+'/saldo'] = nuevoSaldo;
+  const userActualizado = await db.ref().update(updates);
+
+  const ref2 = db.ref('users').orderByChild('email').equalTo(req.body.email);
+  const snapshot2 = await ref2.once('child_added');
+  const user = snapshot2.val();
+  console.log(user)
+  res.json(user)
+} )
+
+
+
+
+router.get('/api/logout', (req, res) => {
+  req.logout();
+  res.json({status: 'logout'})
+})
 
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {

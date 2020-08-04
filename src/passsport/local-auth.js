@@ -5,6 +5,7 @@ const { database } = require('firebase-admin');
 const bcrypt = require('bcrypt');
 
 var serviceAccount = require('../../proyecto-backend-f27fb-firebase-adminsdk-4ss7w-101e32eba4.json');
+const { refund } = require('paypal-rest-sdk');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -43,21 +44,21 @@ passport.use('local-signup', new LocalStrategy({
       let hash = bcrypt.hashSync(req.body.password, 10);
     
       const newUser = {
-          id: Date.now().toString(),
-          name: req.body.name,
-          lastname: req.body.lastname,
+          name: '',
+          lastname: '',
           email: req.body.email,
-          cedula: req.body.cedula,
-          age: req.body.age,
+          cedula: '',
+          age: '',
           saldo: "0",
           password: hash
       }
+
       console.log('nuevo usuario')
       console.log(newUser)
       db.ref('users').push(newUser);
+
       done(null, newUser);
     }
-    
   }));
   
   passport.use('local-signin', new LocalStrategy({

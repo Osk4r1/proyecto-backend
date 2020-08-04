@@ -1,25 +1,56 @@
-POST http://localhost:4000/api/new-user
+POST http://localhost:3000/api/new-user
 Content-Type: application/json
 
 {
-    "name": "peter",
-    "lastname": "R",
-    "email": "petr@gmail.com",
-    "age": "20",
-    "cedula": "1234567890",
+
+    "email": "hola@gmail.com",
     "password": "12345"
 }
 
 ###
-POST http://localhost:4000/loginN
+POST http://localhost:3000/api/login
 Content-Type: application/json
+Accept: application/json
 
 {
-    "email": "petr@gmail.com",
+    "email": "hola@gmail.com",
     "password": "1235"
 }
 
 ###
-GET http://localhost:4000/api/info-user
+POST http://localhost:3000/api/info-user
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "hola@gmail.com"
+}
+
+###
+POST http://localhost:3000/api/update
 Content-Type: application/json
 
+{
+    "name": "UPDATE API", 
+    "lastname": "apellido",
+    "cedula": "cedula",
+    "age": 25,
+    "email": "hola@gmail.com"
+}
+
+###
+POST http://localhost:3000/api/pago
+Content-Type: application/json
+
+{
+    "name": "UPDATE API", 
+    "lastname": "apellido",
+    "cedula": "cedula",
+    "age": 25,
+    "email": "hola@gmail.com",
+    "saldo": "10"
+}
+
+
+###
+GET http://localhost:3000/api/logout
